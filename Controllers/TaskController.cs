@@ -29,6 +29,10 @@ namespace TaskManagementAPI.Controllers
         [HttpPost]
         public IActionResult CreateTask([FromBody] Task newTask)
         {
+            if (string.IsNullOrWhiteSpace(newTask.Title) || string.IsNullOrWhiteSpace(newTask.Priority) || string.IsNullOrWhiteSpace(newTask.Status))
+                return BadRequest(new { message = "Title, Priority, and Status are required." });
+            
+
             newTask.Id = Guid.NewGuid().ToString();
             newTask.CreatedAt = DateTime.UtcNow;
             newTask.UpdatedAt = DateTime.UtcNow;
