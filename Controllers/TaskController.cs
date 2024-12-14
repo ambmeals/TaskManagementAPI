@@ -53,6 +53,7 @@ namespace TaskManagementAPI.Controllers
                 return NotFound(new { message = "Task not found" });
 
             updatedTask.Id = id;
+
             _taskRepository.UpdateTask(updatedTask);
 
             return NoContent();
@@ -67,6 +68,7 @@ namespace TaskManagementAPI.Controllers
                 return NotFound(new { message = "Task not found" });
 
             _taskRepository.DeleteTask(id);
+
             return NoContent();
         }
     }
