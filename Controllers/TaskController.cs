@@ -29,7 +29,6 @@ namespace TaskManagementAPI.Controllers
             return Ok(task);
         }
 
-
         [HttpPost]
         public IActionResult CreateTask([FromBody] Task newTask)
         {
