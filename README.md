@@ -7,14 +7,8 @@ Backend SWAGGER APIs:
 Do not need an ID when creating a task - a generated GUID
 
 Testing in Swagger expected result messages:
-{
-  "title": "Test Task",
-  "description": "This is a test task for validation.",
-  "priority": "HIGH",
-  "status": "TODO",
-  "dueDate": "2024-12-20T00:00:00Z"
-}
-
 ![image](https://github.com/user-attachments/assets/3aab4059-0093-44a6-8905-21b6b77160cc)
+![image](https://github.com/user-attachments/assets/9ed4aee6-664f-4633-8e6c-657428d8b01c)
+
 
 
