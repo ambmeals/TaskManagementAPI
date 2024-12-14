@@ -40,8 +40,7 @@ namespace TaskManagementAPI.Repositories
         }
 
         public Task? GetTaskById(string id) => _tasks
-            .FirstOrDefault(t => t.Id
-                .Equals(id, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(t => t.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
 
         public void CreateTask(Task task)
         {
