@@ -43,7 +43,7 @@ namespace TaskManagementAPI.Repositories
             .FirstOrDefault(t => t.Id
                 .Equals(id, StringComparison.OrdinalIgnoreCase));
 
-        public void AddTask(Task task)
+        public void CreateTask(Task task)
         {
             if (task != null && !string.IsNullOrWhiteSpace(task.Id) && !string.IsNullOrWhiteSpace(task.Title)) _tasks
                 .Add(task);
@@ -79,7 +79,7 @@ namespace TaskManagementAPI.Repositories
     {
         IEnumerable<Task> GetTasks();
         Task? GetTaskById(string id);
-        void AddTask(Task task);
+        void CreateTask(Task task);
         void UpdateTask(Task taskToUpdate);
         void DeleteTask(string id);
     }

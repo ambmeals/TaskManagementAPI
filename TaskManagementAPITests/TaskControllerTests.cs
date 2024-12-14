@@ -88,7 +88,7 @@ namespace TaskManagementAPI.TaskManagementAPITests
             var result = _taskController.CreateTask(newTask) as CreatedAtActionResult;
 
             result.Should().NotBeNull();
-            _mockRepository.Verify(repo => repo.AddTask(newTask), Times.Once);
+            _mockRepository.Verify(repo => repo.CreateTask(newTask), Times.Once);
 
             result!.ActionName.Should().Be(nameof(TaskController.GetTaskById));
             result.RouteValues.Should().ContainKey("id").WhoseValue.Should().Be(newTask.Id);

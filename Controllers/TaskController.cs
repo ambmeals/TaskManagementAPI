@@ -39,7 +39,7 @@ namespace TaskManagementAPI.Controllers
             newTask.CreatedAt = DateTime.UtcNow;
             newTask.UpdatedAt = DateTime.UtcNow;
 
-            _taskRepository.AddTask(newTask);
+            _taskRepository.CreateTask(newTask);
 
             return CreatedAtAction(nameof(GetTaskById), new { id = newTask.Id }, newTask);
         }
