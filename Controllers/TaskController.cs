@@ -39,7 +39,7 @@ namespace TaskManagementAPI.Controllers
             newTask.CreatedAt = DateTime.UtcNow;
             newTask.UpdatedAt = DateTime.UtcNow;
 
-            _taskRepository.AddTask(newTask);
+            _taskRepository.CreateTask(newTask);
 
             return CreatedAtAction(nameof(GetTaskById), new { id = newTask.Id }, newTask);
         }
@@ -48,6 +48,7 @@ namespace TaskManagementAPI.Controllers
         public IActionResult UpdateTask(string id, [FromBody] Task updatedTask)
         {
             var existingTask = _taskRepository.GetTaskById(id);
+
             if (existingTask == null)
                 return NotFound(new { message = "Task not found" });
 
@@ -61,10 +62,12 @@ namespace TaskManagementAPI.Controllers
         public IActionResult DeleteTask(string id)
         {
             var existingTask = _taskRepository.GetTaskById(id);
+
             if (existingTask == null)
                 return NotFound(new { message = "Task not found" });
 
             _taskRepository.DeleteTask(id);
+
             return NoContent();
         }
     }
