@@ -1,15 +1,18 @@
 using Microsoft.AspNetCore.Diagnostics;
+using TaskManagementAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowReactApp", policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
         policy.WithOrigins("http://localhost:3000")
             .AllowAnyHeader()
@@ -19,12 +22,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -32,19 +29,26 @@ app.UseExceptionHandler(errorApp =>
         context.Response.StatusCode = 500;
         context.Response.ContentType = "application/json";
 
-        var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-        var result = new
+        var exceptionDetails = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+        var response = new
         {
             message = "An unexpected error occurred.",
-            details = error?.Message
+            details = exceptionDetails?.Message
         };
-        await context.Response.WriteAsJsonAsync(result);
+
+        await context.Response.WriteAsJsonAsync(response);
     });
 });
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.UseCors("AllowReactApp");
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthorization();
 

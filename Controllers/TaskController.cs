@@ -8,36 +8,37 @@ namespace TaskManagementAPI.Controllers
     [Route("api/[controller]")]
     public class TaskController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetAllTasks()
+        private readonly ITaskRepository _taskRepository;
+
+        public TaskController(ITaskRepository taskRepository)
         {
-            return Ok(TaskRepository.Tasks);
+            _taskRepository = taskRepository;
         }
+
+        [HttpGet]
+        public IActionResult GetAllTasks() => Ok(_taskRepository.GetTasks());
 
         [HttpGet("{id}")]
         public IActionResult GetTaskById(string id)
         {
-            var task = TaskRepository.Tasks
-                .FirstOrDefault(t => t.Id == id);
+            var task = _taskRepository.GetTaskById(id);
 
-            if (task != null)
-                return Ok(task);
-
-            return NotFound(new { message = "Task not found" });
+            return task == null 
+                ? NotFound(new { message = "Task not found" }) 
+                : Ok(task);
         }
 
         [HttpPost]
         public IActionResult CreateTask([FromBody] Task newTask)
         {
-            if (string.IsNullOrWhiteSpace(newTask.Title) || string.IsNullOrWhiteSpace(newTask.Priority) || string.IsNullOrWhiteSpace(newTask.Status))
-                return BadRequest(new { message = "Title, Priority, and Status are required." });
-            
+            if (string.IsNullOrWhiteSpace(newTask.Title))
+                return BadRequest(new { message = "Title is required." });
 
             newTask.Id = Guid.NewGuid().ToString();
             newTask.CreatedAt = DateTime.UtcNow;
             newTask.UpdatedAt = DateTime.UtcNow;
 
-            TaskRepository.Tasks.Add(newTask);
+            _taskRepository.AddTask(newTask);
 
             return CreatedAtAction(nameof(GetTaskById), new { id = newTask.Id }, newTask);
         }
@@ -45,37 +46,25 @@ namespace TaskManagementAPI.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateTask(string id, [FromBody] Task updatedTask)
         {
-            var task = TaskRepository.Tasks
-                .FirstOrDefault(t => t.Id == id);
+            var existingTask = _taskRepository.GetTaskById(id);
+            if (existingTask == null)
+                return NotFound(new { message = "Task not found" });
 
-            if (task != null)
-            {
-                task.Title = updatedTask.Title;
-                task.Description = updatedTask.Description;
-                task.Priority = updatedTask.Priority;
-                task.Status = updatedTask.Status;
-                task.DueDate = updatedTask.DueDate;
-                task.UpdatedAt = DateTime.UtcNow;
+            updatedTask.Id = id;
+            _taskRepository.UpdateTask(updatedTask);
 
-                return NoContent();
-            }
-
-            return NotFound(new { message = "Task not found" });
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteTask(string id)
         {
-            var task = TaskRepository.Tasks
-                .FirstOrDefault(t => t.Id == id);
+            var existingTask = _taskRepository.GetTaskById(id);
+            if (existingTask == null)
+                return NotFound(new { message = "Task not found" });
 
-            if (task != null)
-            {
-                TaskRepository.Tasks.Remove(task);
-                return NoContent();
-            }
-
-            return NotFound(new { message = "Task not found" });
+            _taskRepository.DeleteTask(id);
+            return NoContent();
         }
     }
 }
