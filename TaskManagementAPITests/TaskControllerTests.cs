@@ -32,6 +32,9 @@ namespace TaskManagementAPI.TaskManagementAPITests
             _mockRepository.Setup(repo => repo.GetTaskById("non-existent-id"))
                 .Returns((TaskModel)null);
 
+            _mockRepository.Setup(repo => repo.CreateTask(It.IsAny<TaskModel>()))
+                .Verifiable();
+
             _taskController = new TaskController(_mockRepository.Object);
         }
 
@@ -92,6 +95,24 @@ namespace TaskManagementAPI.TaskManagementAPITests
 
             result!.ActionName.Should().Be(nameof(TaskController.GetTaskById));
             result.RouteValues.Should().ContainKey("id").WhoseValue.Should().Be(newTask.Id);
+        }
+
+        [Test]
+        public void create_should_return_bad_request_when_title_is_empty()
+        {
+            var newTask = new TaskModel
+            {
+                Id = "4",
+                Title = "",
+                Priority = "LOW",
+                Status = "TODO"
+            };
+
+            var result = _taskController?.CreateTask(newTask);
+
+            result.Should().BeOfType<BadRequestObjectResult>();
+
+            _mockRepository?.Verify(repo => repo.CreateTask(It.IsAny<TaskModel>()), Times.Never);
         }
     }
 }
