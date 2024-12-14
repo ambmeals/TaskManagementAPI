@@ -4,54 +4,39 @@ namespace TaskManagementAPI.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
-        private readonly List<Task> _tasks;
-
-        public TaskRepository()
+        private static readonly List<Task> _tasks = new()
         {
-            _tasks =
-            [
-                new()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Title = "Task 1",
-                    Description = "This is the first task",
-                    Priority = "HIGH",
-                    Status = "TODO",
-                    DueDate = DateTime.UtcNow.AddDays(7),
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
+            new Task
+            {
+                Id = Guid.NewGuid().ToString(),
+                Title = "Task 1",
+                Description = "This is the first task",
+                Priority = "HIGH",
+                Status = "TODO",
+                DueDate = DateTime.UtcNow.AddDays(7),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Task
+            {
+                Id = Guid.NewGuid().ToString(),
+                Title = "Task 2",
+                Description = "This is the second task",
+                Priority = "MEDIUM",
+                Status = "IN_PROGRESS",
+                DueDate = DateTime.UtcNow.AddDays(5),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            }
+        };
 
-                new()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Title = "Task 2",
-                    Description = "This is the second task",
-                    Priority = "MEDIUM",
-                    Status = "IN_PROGRESS",
-                    DueDate = DateTime.UtcNow.AddDays(5),
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                }
-            ];
-        }
+        public IEnumerable<Task> GetTasks() => _tasks;
 
-        public IEnumerable<Task> GetTasks()
-        {
-            return _tasks;
-        }
-
-        public Task? GetTaskById(string id)
-        {
-            if (id != null)
-                return _tasks.FirstOrDefault(t => t.Id == id);
-
-            return null;
-        }
+        public Task? GetTaskById(string id) => _tasks.FirstOrDefault(t => t.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
 
         public void AddTask(Task task)
         {
-            if (task != null)
+            if (task != null && !string.IsNullOrWhiteSpace(task.Id) && !string.IsNullOrWhiteSpace(task.Title))
                 _tasks.Add(task);
         }
 
@@ -59,8 +44,7 @@ namespace TaskManagementAPI.Repositories
         {
             if (taskToUpdate != null)
             {
-                var existingTask = _tasks
-                    .FirstOrDefault(t => t.Id == taskToUpdate.Id);
+                var existingTask = _tasks.FirstOrDefault(t => t.Id == taskToUpdate.Id);
 
                 if (existingTask != null)
                 {
@@ -76,7 +60,7 @@ namespace TaskManagementAPI.Repositories
 
         public void DeleteTask(string id)
         {
-            if (id != null)
+            if (!string.IsNullOrWhiteSpace(id))
                 _tasks.RemoveAll(t => t.Id == id);
         }
     }

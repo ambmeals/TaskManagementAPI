@@ -23,10 +23,12 @@ namespace TaskManagementAPI.Controllers
         {
             var task = _taskRepository.GetTaskById(id);
 
-            return task == null 
-                ? NotFound(new { message = "Task not found" }) 
-                : Ok(task);
+            if (task == null)
+                return NotFound(new { message = "Task not found" });
+
+            return Ok(task);
         }
+
 
         [HttpPost]
         public IActionResult CreateTask([FromBody] Task newTask)
