@@ -48,6 +48,7 @@ namespace TaskManagementAPI.Controllers
         public IActionResult UpdateTask(string id, [FromBody] Task updatedTask)
         {
             var existingTask = _taskRepository.GetTaskById(id);
+
             if (existingTask == null)
                 return NotFound(new { message = "Task not found" });
 
@@ -61,6 +62,7 @@ namespace TaskManagementAPI.Controllers
         public IActionResult DeleteTask(string id)
         {
             var existingTask = _taskRepository.GetTaskById(id);
+
             if (existingTask == null)
                 return NotFound(new { message = "Task not found" });
 
