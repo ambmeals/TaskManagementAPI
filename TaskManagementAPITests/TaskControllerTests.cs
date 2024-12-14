@@ -12,7 +12,7 @@ namespace TaskManagementAPI.TaskManagementAPITests
     public class TaskControllerTests
     {
         private Mock<ITaskRepository> _mockRepository;
-        private TaskController _controller;
+        private TaskController _taskController;
 
         [SetUp]
         public void SetUp()
@@ -27,13 +27,13 @@ namespace TaskManagementAPI.TaskManagementAPITests
             _mockRepository.Setup(repo => repo.GetTaskById("1"))
                 .Returns(new TaskModel { Id = "1", Title = "Task 1" });
 
-            _controller = new TaskController(_mockRepository.Object);
+            _taskController = new TaskController(_mockRepository.Object);
         }
 
         [Test]
         public void GetAllTasks_ShouldReturnAllTasks()
         {
-            var result = _controller.GetAllTasks() as OkObjectResult;
+            var result = _taskController.GetAllTasks() as OkObjectResult;
 
             result.Should().NotBeNull();
 
@@ -48,7 +48,7 @@ namespace TaskManagementAPI.TaskManagementAPITests
         [Test]
         public void GetTaskById_ShouldReturnTask_WhenTaskExists()
         {
-            var result = _controller.GetTaskById("1") as OkObjectResult;
+            var result = _taskController.GetTaskById("1") as OkObjectResult;
 
             result.Should().NotBeNull();
 
@@ -64,7 +64,7 @@ namespace TaskManagementAPI.TaskManagementAPITests
         [Test]
         public void GetTaskById_ShouldReturnNotFound_WhenTaskDoesNotExist()
         {
-            var result = _controller.GetTaskById("non-existent-id");
+            var result = _taskController.GetTaskById("non-existent-id");
 
             result.Should().BeOfType<NotFoundObjectResult>();
         }
@@ -79,7 +79,7 @@ namespace TaskManagementAPI.TaskManagementAPITests
                 Status = "TODO"
             };
 
-            var result = _controller.CreateTask(newTask) as CreatedAtActionResult;
+            var result = _taskController.CreateTask(newTask) as CreatedAtActionResult;
 
             result.Should().NotBeNull();
 
