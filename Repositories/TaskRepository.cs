@@ -30,21 +30,31 @@ namespace TaskManagementAPI.Repositories
             }
         };
 
-        public IEnumerable<Task> GetTasks() => _tasks;
+        public IEnumerable<Task> GetTasks()
+        {
+            return _tasks
+                .OrderBy(t => t.DueDate.HasValue 
+                    ? 0 
+                    : 1) 
+                .ThenBy(t => t.DueDate);
+        }
 
-        public Task? GetTaskById(string id) => _tasks.FirstOrDefault(t => t.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
+        public Task? GetTaskById(string id) => _tasks
+            .FirstOrDefault(t => t.Id
+                .Equals(id, StringComparison.OrdinalIgnoreCase));
 
         public void AddTask(Task task)
         {
-            if (task != null && !string.IsNullOrWhiteSpace(task.Id) && !string.IsNullOrWhiteSpace(task.Title))
-                _tasks.Add(task);
+            if (task != null && !string.IsNullOrWhiteSpace(task.Id) && !string.IsNullOrWhiteSpace(task.Title)) _tasks
+                .Add(task);
         }
 
         public void UpdateTask(Task taskToUpdate)
         {
             if (taskToUpdate != null)
             {
-                var existingTask = _tasks.FirstOrDefault(t => t.Id == taskToUpdate.Id);
+                var existingTask = _tasks
+                    .FirstOrDefault(t => t.Id == taskToUpdate.Id);
 
                 if (existingTask != null)
                 {
@@ -60,8 +70,8 @@ namespace TaskManagementAPI.Repositories
 
         public void DeleteTask(string id)
         {
-            if (!string.IsNullOrWhiteSpace(id))
-                _tasks.RemoveAll(t => t.Id == id);
+            if (!string.IsNullOrWhiteSpace(id)) _tasks
+                .RemoveAll(t => t.Id == id);
         }
     }
 
