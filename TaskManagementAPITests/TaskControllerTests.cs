@@ -11,23 +11,23 @@ namespace TaskManagementAPI.TaskManagementAPITests
     [TestFixture]
     public class TaskControllerTests
     {
-        private Mock<ITaskRepository> _mockRepository;
         private TaskController _taskController;
 
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new Mock<ITaskRepository>();
-            _mockRepository.Setup(repo => repo.GetTasks())
+            var mockRepository = new Mock<ITaskRepository>();
+
+            mockRepository.Setup(repo => repo.GetTasks())
                 .Returns(new List<TaskModel>
                 {
                     new() { Id = "1", Title = "Task 1", DueDate = DateTime.UtcNow.AddDays(1) },
                     new() { Id = "2", Title = "Task 2", DueDate = DateTime.UtcNow.AddDays(2) }
                 });
-            _mockRepository.Setup(repo => repo.GetTaskById("1"))
+            mockRepository.Setup(repo => repo.GetTaskById("1"))
                 .Returns(new TaskModel { Id = "1", Title = "Task 1" });
 
-            _taskController = new TaskController(_mockRepository.Object);
+            _taskController = new TaskController(mockRepository.Object);
         }
 
         [Test]
