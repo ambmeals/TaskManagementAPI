@@ -23,25 +23,27 @@ namespace TaskManagementAPI.Controllers
         {
             var task = _taskRepository.GetTaskById(id);
 
-            if (task == null)
-                return NotFound(new { message = "Task not found" });
+            if (task != null)
+                return Ok(task);
 
-            return Ok(task);
+            return NotFound(new { message = "Task not found" });
         }
 
         [HttpPost]
         public IActionResult CreateTask([FromBody] Task newTask)
         {
-            if (string.IsNullOrWhiteSpace(newTask.Title))
-                return BadRequest(new { message = "Title is required." });
+            if (!string.IsNullOrWhiteSpace(newTask.Title))
+            {
+                newTask.Id = Guid.NewGuid().ToString();
+                newTask.CreatedAt = DateTime.UtcNow;
+                newTask.UpdatedAt = DateTime.UtcNow;
 
-            newTask.Id = Guid.NewGuid().ToString();
-            newTask.CreatedAt = DateTime.UtcNow;
-            newTask.UpdatedAt = DateTime.UtcNow;
+                _taskRepository.CreateTask(newTask);
 
-            _taskRepository.CreateTask(newTask);
+                return CreatedAtAction(nameof(GetTaskById), new { id = newTask.Id }, newTask);
+            }
 
-            return CreatedAtAction(nameof(GetTaskById), new { id = newTask.Id }, newTask);
+            return BadRequest(new { message = "Title is required." });
         }
 
         [HttpPut("{id}")]
@@ -49,14 +51,14 @@ namespace TaskManagementAPI.Controllers
         {
             var existingTask = _taskRepository.GetTaskById(id);
 
-            if (existingTask == null)
-                return NotFound(new { message = "Task not found" });
+            if (existingTask != null)
+            {
+                updatedTask.Id = id;
 
-            updatedTask.Id = id;
+                _taskRepository.UpdateTask(updatedTask);
+            }
 
-            _taskRepository.UpdateTask(updatedTask);
-
-            return NoContent();
+            return NotFound(new { message = "Task not found" });
         }
 
         [HttpDelete("{id}")]
@@ -64,10 +66,8 @@ namespace TaskManagementAPI.Controllers
         {
             var existingTask = _taskRepository.GetTaskById(id);
 
-            if (existingTask == null)
-                return NotFound(new { message = "Task not found" });
-
-            _taskRepository.DeleteTask(id);
+            if (existingTask != null)
+                _taskRepository.DeleteTask(id);
 
             return NoContent();
         }
