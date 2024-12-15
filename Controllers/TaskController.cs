@@ -77,7 +77,7 @@ namespace TaskManagementAPI.Controllers
 
             _taskRepository.DeleteTask(id);
 
-            return Ok(new { message = "Task deleted successfully.", taskId = id });
+            return NoContent();
         }
     }
 }
