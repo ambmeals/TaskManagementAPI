@@ -36,7 +36,7 @@ app.UseExceptionHandler(errorApp =>
             details = exceptionDetails?.Message
         };
 
-        await context.Response.WriteAsJsonAsync(response);
+        await context.Response.WriteAsJsonAsync(response).ConfigureAwait(false);
     });
 });
 
