@@ -30,7 +30,7 @@ namespace TaskManagementAPI.TaskManagementAPITests
                 .Returns(new TaskModel { Id = "1", Title = "Task 1" });
 
             _mockRepository.Setup(repo => repo.GetTaskById("non-existent-id"))
-                .Returns((TaskModel)null);
+                .Returns(null as TaskModel);
 
             _mockRepository.Setup(repo => repo.CreateTask(It.IsAny<TaskModel>()))
                 .Verifiable();
