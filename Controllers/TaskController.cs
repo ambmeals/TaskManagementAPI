@@ -27,9 +27,10 @@ namespace TaskManagementAPI.Controllers
             if (task == null)
                 return NotFound(new { message = "Task not found" });
 
-            return Ok(new { message = task});
+            return Ok(new { message = task });
         }
 
+        [HttpPost]
         [HttpPost]
         public ActionResult CreateTask([FromBody] Task newTask)
         {
@@ -42,10 +43,9 @@ namespace TaskManagementAPI.Controllers
 
             _taskRepository.CreateTask(newTask);
 
-            return CreatedAtAction(
-                nameof(GetTaskById),
+            return CreatedAtAction(nameof(GetTaskById),
                 new { id = newTask.Id },
-                new { message = "Task created successfully.", task = newTask }
+                newTask
             );
         }
 
