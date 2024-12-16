@@ -27,7 +27,7 @@ namespace TaskManagementAPI.Controllers
             if (task == null)
                 return NotFound(new { message = "Task not found" });
 
-            return Ok(task);
+            return Ok(new { message = task});
         }
 
         [HttpPost]
@@ -73,7 +73,7 @@ namespace TaskManagementAPI.Controllers
 
             _taskRepository.DeleteTask(id);
 
-            return NoContent();
+            return Ok(new { message = "Task deleted" });
         }
     }
 }
