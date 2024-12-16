@@ -43,8 +43,10 @@ namespace TaskManagementAPI.Repositories
 
         public void CreateTask(Task task)
         {
-            if (task != null && !string.IsNullOrWhiteSpace(task.Id) && !string.IsNullOrWhiteSpace(task.Title)) 
-                _tasks.Add(task);
+            if (task == null || string.IsNullOrWhiteSpace(task.Title))
+                throw new ArgumentException("Invalid task");
+
+            _tasks.Add(task);
         }
 
         public void UpdateTask(Task taskToUpdate)
@@ -67,8 +69,7 @@ namespace TaskManagementAPI.Repositories
 
         public void DeleteTask(string id)
         {
-            if (!string.IsNullOrWhiteSpace(id)) 
-                _tasks.RemoveAll(t => t.Id == id);
+            _tasks.RemoveAll(t => t.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
         }
     }
 

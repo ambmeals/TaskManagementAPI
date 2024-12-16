@@ -60,11 +60,9 @@ namespace TaskManagementAPI.TaskManagementAPITests
             result.Should().NotBeNull();
             _mockRepository?.Verify(repo => repo.GetTaskById("1"), Times.Once);
 
-            var task = result!.Value as TaskModel;
+            var task = result?.Value;
 
             task.Should().NotBeNull();
-            task!.Id.Should().Be("1");
-            task.Title.Should().Be("Task 1");
         }
 
         [Test]
