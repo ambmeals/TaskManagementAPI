@@ -19,7 +19,7 @@ namespace TaskManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult GetAllTasks() => Ok(_taskRepository.GetTasks());
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public ActionResult GetTaskById(string id)
         {
             var task = _taskRepository.GetTaskById(id);
@@ -42,13 +42,14 @@ namespace TaskManagementAPI.Controllers
 
             _taskRepository.CreateTask(newTask);
 
-            return CreatedAtAction(nameof(GetTaskById),
+            return CreatedAtAction(
+                nameof(GetTaskById),
                 new { id = newTask.Id },
                 new { message = "Task created successfully.", task = newTask }
             );
         }
 
-        [HttpPost]
+        [HttpPut("{id}")]
         public ActionResult UpdateTask(string id, [FromBody] Task updatedTask)
         {
             var existingTask = _taskRepository.GetTaskById(id);
@@ -62,7 +63,7 @@ namespace TaskManagementAPI.Controllers
             return Ok(new { message = "Task updated successfully.", task = updatedTask });
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public ActionResult DeleteTask(string id)
         {
             var existingTask = _taskRepository.GetTaskById(id);
@@ -72,7 +73,7 @@ namespace TaskManagementAPI.Controllers
 
             _taskRepository.DeleteTask(id);
 
-            return Ok(NoContent());
+            return NoContent();
         }
     }
 }
