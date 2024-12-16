@@ -51,20 +51,17 @@ namespace TaskManagementAPI.Repositories
 
         public void UpdateTask(Task taskToUpdate)
         {
-            if (taskToUpdate != null)
-            {
-                var existingTask = _tasks.FirstOrDefault(t => t.Id == taskToUpdate.Id);
+            var existingTask = _tasks.FirstOrDefault(t => t.Id == taskToUpdate?.Id);
 
-                if (existingTask != null)
-                {
-                    existingTask.Title = taskToUpdate.Title;
-                    existingTask.Description = taskToUpdate.Description;
-                    existingTask.Priority = taskToUpdate.Priority;
-                    existingTask.Status = taskToUpdate.Status;
-                    existingTask.DueDate = taskToUpdate.DueDate;
-                    existingTask.UpdatedAt = DateTime.UtcNow;
-                }
-            }
+            if (existingTask == null) 
+                return;
+
+            existingTask.Title = taskToUpdate.Title;
+            existingTask.Description = taskToUpdate.Description;
+            existingTask.Priority = taskToUpdate.Priority;
+            existingTask.Status = taskToUpdate.Status;
+            existingTask.DueDate = taskToUpdate.DueDate;
+            existingTask.UpdatedAt = DateTime.UtcNow;
         }
 
         public void DeleteTask(string id)
