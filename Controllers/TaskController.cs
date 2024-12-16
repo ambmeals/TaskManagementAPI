@@ -17,12 +17,10 @@ namespace TaskManagementAPI.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult GetAllTasks() => Ok(_taskRepository.GetTasks());
+        public ActionResult GetAllTasks() => Ok(_taskRepository.GetTasks());
 
-        [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetTaskById(string id)
+        [HttpGet]
+        public ActionResult GetTaskById(string id)
         {
             var task = _taskRepository.GetTaskById(id);
 
@@ -33,9 +31,7 @@ namespace TaskManagementAPI.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CreateTask([FromBody] Task newTask)
+        public ActionResult CreateTask([FromBody] Task newTask)
         {
             if (string.IsNullOrWhiteSpace(newTask.Title))
                 return BadRequest(new { message = "Title is required." });
@@ -46,15 +42,14 @@ namespace TaskManagementAPI.Controllers
 
             _taskRepository.CreateTask(newTask);
 
-            return CreatedAtAction(
-                nameof(GetTaskById),
+            return CreatedAtAction(nameof(GetTaskById),
                 new { id = newTask.Id },
                 new { message = "Task created successfully.", task = newTask }
             );
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateTask(string id, [FromBody] Task updatedTask)
+        [HttpPost]
+        public ActionResult UpdateTask(string id, [FromBody] Task updatedTask)
         {
             var existingTask = _taskRepository.GetTaskById(id);
 
@@ -67,8 +62,8 @@ namespace TaskManagementAPI.Controllers
             return Ok(new { message = "Task updated successfully.", task = updatedTask });
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteTask(string id)
+        [HttpDelete]
+        public ActionResult DeleteTask(string id)
         {
             var existingTask = _taskRepository.GetTaskById(id);
 
@@ -77,7 +72,7 @@ namespace TaskManagementAPI.Controllers
 
             _taskRepository.DeleteTask(id);
 
-            return NoContent();
+            return Ok(NoContent());
         }
     }
 }
