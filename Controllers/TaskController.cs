@@ -17,25 +17,21 @@ namespace TaskManagementAPI.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult GetAllTasks() => Ok(_taskRepository.GetTasks());
+        public ActionResult GetAllTasks() => Ok(_taskRepository.GetTasks());
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetTaskById(string id)
+        public ActionResult GetTaskById(string id)
         {
             var task = _taskRepository.GetTaskById(id);
 
             if (task == null)
                 return NotFound(new { message = "Task not found" });
 
-            return Ok(task);
+            return Ok(new { message = task});
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CreateTask([FromBody] Task newTask)
+        public ActionResult CreateTask([FromBody] Task newTask)
         {
             if (string.IsNullOrWhiteSpace(newTask.Title))
                 return BadRequest(new { message = "Title is required." });
@@ -54,7 +50,7 @@ namespace TaskManagementAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTask(string id, [FromBody] Task updatedTask)
+        public ActionResult UpdateTask(string id, [FromBody] Task updatedTask)
         {
             var existingTask = _taskRepository.GetTaskById(id);
 
@@ -68,7 +64,7 @@ namespace TaskManagementAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteTask(string id)
+        public ActionResult DeleteTask(string id)
         {
             var existingTask = _taskRepository.GetTaskById(id);
 
@@ -77,7 +73,7 @@ namespace TaskManagementAPI.Controllers
 
             _taskRepository.DeleteTask(id);
 
-            return NoContent();
+            return Ok(new { message = "Task deleted" });
         }
     }
 }
