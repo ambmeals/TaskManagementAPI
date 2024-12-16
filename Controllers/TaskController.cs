@@ -31,7 +31,6 @@ namespace TaskManagementAPI.Controllers
         }
 
         [HttpPost]
-        [HttpPost]
         public ActionResult CreateTask([FromBody] Task newTask)
         {
             if (string.IsNullOrWhiteSpace(newTask.Title))
@@ -45,7 +44,7 @@ namespace TaskManagementAPI.Controllers
 
             return CreatedAtAction(nameof(GetTaskById),
                 new { id = newTask.Id },
-                newTask
+                new { message = "Task created successfully.", task = newTask }
             );
         }
 
