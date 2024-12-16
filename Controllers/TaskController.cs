@@ -16,7 +16,6 @@ namespace TaskManagementAPI.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult GetAllTasks() => Ok(_taskRepository.GetTasks());
 
         [HttpGet("{id}")]
