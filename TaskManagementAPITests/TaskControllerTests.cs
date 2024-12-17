@@ -3,114 +3,107 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using TaskManagementAPI.Controllers;
+using TaskManagementAPI.Models;
 using TaskManagementAPI.Repositories;
-using TaskModel = TaskManagementAPI.Models.Task;
 
 namespace TaskManagementAPI.TaskManagementAPITests
 {
     [TestFixture]
     public class TaskControllerTests
     {
-        private TaskController? _taskController;
-        private Mock<ITaskRepository>? _mockRepository;
+        private TaskController _taskController;
+        private Mock<ITaskRepository> _mockRepository;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new Mock<ITaskRepository>();
-
-            _mockRepository.Setup(repo => repo.GetTasks())
-                .Returns(new List<TaskModel>
-                {
-                    new() { Id = "1", Title = "Task 1", DueDate = DateTime.UtcNow.AddDays(1) },
-                    new() { Id = "2", Title = "Task 2", DueDate = DateTime.UtcNow.AddDays(2) }
-                });
-
-            _mockRepository.Setup(repo => repo.GetTaskById("1"))
-                .Returns(new TaskModel { Id = "1", Title = "Task 1" });
-
-            _mockRepository.Setup(repo => repo.GetTaskById("non-existent-id"))
-                .Returns(null as TaskModel);
-
-            _mockRepository.Setup(repo => repo.CreateTask(It.IsAny<TaskModel>()))
-                .Verifiable();
-
             _taskController = new TaskController(_mockRepository.Object);
         }
 
+        private static List<Models.Task> GetDummyTasks() =>
+            new()
+            {
+                new() { Id = "1", Title = "Task 1", DueDate = DateTime.UtcNow.AddDays(1) },
+                new() { Id = "2", Title = "Task 2", DueDate = DateTime.UtcNow.AddDays(2) },
+                new() { Id = "3", Title = "Task 3" }
+            };
+
         [Test]
-        public void get_all_tasks_should_return_tasks()
+        public void get_all_tasks_should_return_tasks_ordered_by_dueDate()
         {
-            var result = _taskController?.GetAllTasks() as OkObjectResult;
+            var tasks = GetDummyTasks();
+            _mockRepository.Setup(repo => repo.GetTasks()).Returns(tasks);
 
-            result.Should().NotBeNull();
-            _mockRepository?.Verify(repo => repo.GetTasks(), Times.Once);
+            var result = _taskController.GetAllTasks().Result as OkObjectResult;
 
-            var tasks = result!.Value as IEnumerable<TaskModel>;
+            var response = result!.Value as ApiResponse<IEnumerable<Models.Task>>;
 
-            tasks.Should().NotBeNull();
-            tasks!.Count().Should().Be(2);
+            response!.Message.Should().Be("Tasks retrieved successfully");
+            response.Data.Select(t => t.Title).Should().ContainInOrder("Task 1", "Task 2", "Task 3");
         }
 
         [Test]
         public void get_task_by_id_should_return_task_when_it_exists()
         {
-            var result = _taskController?.GetTaskById("1") as OkObjectResult;
+            var task = new Models.Task { Id = "1", Title = "Task 1" };
+            _mockRepository.Setup(repo => repo.GetTaskById("1")).Returns(task);
 
-            result.Should().NotBeNull();
-            _mockRepository?.Verify(repo => repo.GetTaskById("1"), Times.Once);
+            var result = _taskController.GetTaskById("1").Result as OkObjectResult;
 
-            var task = result?.Value;
+            var response = result!.Value as ApiResponse<Models.Task>;
 
-            task.Should().NotBeNull();
+            response!.Message.Should().Be("Task retrieved successfully");
+            response.Data.Should().BeEquivalentTo(task);
         }
 
         [Test]
         public void get_task_by_id_should_return_not_found_when_task_does_not_exist()
         {
-            var result = _taskController?.GetTaskById("non-existent-id");
+            _mockRepository.Setup(repo => repo.GetTaskById("non-existent-id")).Returns((Models.Task)null);
+
+            var result = _taskController.GetTaskById("non-existent-id").Result;
 
             result.Should().BeOfType<NotFoundObjectResult>();
-
-            _mockRepository?.Verify(repo => repo.GetTaskById("non-existent-id"), Times.Once);
         }
 
         [Test]
         public void create_should_create_task_if_valid()
         {
-            var newTask = new TaskModel
+            var input = new TaskInput
             {
-                Id = "3",
                 Title = "New Task",
+                Description = "Description",
                 Priority = "HIGH",
-                Status = "TODO"
+                Status = "TODO",
+                DueDate = DateTime.UtcNow.AddDays(3)
             };
 
-            var result = _taskController?.CreateTask(newTask) as CreatedAtActionResult;
+            var result = _taskController.CreateTask(input).Result as CreatedAtActionResult;
 
-            result.Should().NotBeNull();
-            _mockRepository?.Verify(repo => repo.CreateTask(newTask), Times.Once);
+            var response = result!.Value as ApiResponse<Models.Task>;
 
-            result!.ActionName.Should().Be(nameof(TaskController.GetTaskById));
-            result.RouteValues.Should().ContainKey("id").WhoseValue.Should().Be(newTask.Id);
+            response!.Message.Should().Be("Task created successfully");
+            _mockRepository.Verify(repo => repo.CreateTask(It.IsAny<Models.Task>()), Times.Once);
         }
 
         [Test]
         public void create_should_return_bad_request_when_title_is_empty()
         {
-            var newTask = new TaskModel
+            var input = new TaskInput
             {
-                Id = "4",
                 Title = "",
+                Description = "Invalid task",
                 Priority = "LOW",
                 Status = "TODO"
             };
 
-            var result = _taskController?.CreateTask(newTask);
+            var result = _taskController.CreateTask(input).Result as BadRequestObjectResult;
 
-            result.Should().BeOfType<BadRequestObjectResult>();
+            var response = result!.Value as ApiResponse<Models.Task>;
 
-            _mockRepository?.Verify(repo => repo.CreateTask(It.IsAny<TaskModel>()), Times.Never);
+            response!.Message.Should().Be("Title is required");
+            _mockRepository.Verify(repo => repo.CreateTask(It.IsAny<Models.Task>()), Times.Never);
         }
     }
 }
