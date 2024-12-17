@@ -29,8 +29,7 @@ namespace TaskManagementAPI.Controllers
             if (_taskRepository.GetTaskById(id) == null)
                 return NotFound(new ApiResponse<Task>("Task not found"));
 
-            return 
-                Ok(new ApiResponse<Task>("Task retrieved successfully", _taskRepository.GetTaskById(id)));
+            return Ok(new ApiResponse<Task>("Task retrieved successfully", _taskRepository.GetTaskById(id)));
         }
 
         [HttpPost]
@@ -65,17 +64,16 @@ namespace TaskManagementAPI.Controllers
             if (existingTask == null)
                 return NotFound(new ApiResponse<Task>("Task not found"));
 
-            existingTask.Title = input.Title ?? existingTask.Title;
-            existingTask.Description = input.Description ?? existingTask.Description;
-            existingTask.Priority = input.Priority ?? existingTask.Priority;
-            existingTask.Status = input.Status ?? existingTask.Status;
+            existingTask.Title = input.Title;
+            existingTask.Description = input.Description;
+            existingTask.Priority = input.Priority;
+            existingTask.Status = input.Status;
             existingTask.DueDate = input.DueDate ?? existingTask.DueDate;
             existingTask.UpdatedAt = DateTime.UtcNow;
 
             _taskRepository.UpdateTask(existingTask);
 
-            return 
-                Ok(new ApiResponse<Task>("Task updated successfully", existingTask));
+            return Ok(new ApiResponse<Task>("Task updated successfully", existingTask));
         }
 
         [HttpDelete("{id}")]
@@ -88,8 +86,7 @@ namespace TaskManagementAPI.Controllers
 
             _taskRepository.DeleteTask(id);
 
-            return 
-                Ok(new ApiResponse<string>("Task deleted successfully"));
+            return Ok(new ApiResponse<string>("Task deleted successfully"));
         }
     }
 }
