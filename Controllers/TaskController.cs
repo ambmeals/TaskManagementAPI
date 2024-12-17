@@ -44,8 +44,8 @@ namespace TaskManagementAPI.Controllers
                 Id = Guid.NewGuid().ToString(),
                 Title = input.Title,
                 Description = input.Description,
-                Priority = input.Priority ?? "MEDIUM",
-                Status = input.Status ?? "TODO",
+                Priority = input.Priority,
+                Status = input.Status,
                 DueDate = input.DueDate,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
