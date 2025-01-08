@@ -49,6 +49,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.Use(async (context, next) =>
+{
+    await next();
+
+    if (context.Response.StatusCode == 403)
+    {
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new { message = "Access forbidden. Please check your permissions or CORS configuration." });
+    }
+});
 
 app.UseCors("AllowFrontend");
 
