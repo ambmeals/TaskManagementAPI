@@ -6,7 +6,7 @@
         public string? Title { get; set; }
         public string? Description { get; set; }
         public string Priority { get; set; } = "MEDIUM";
-        public string Status { get; set; } = "TODO";
+        public string Status { get; set; } = "TO DO";
         public DateTime? DueDate { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
