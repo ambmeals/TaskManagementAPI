@@ -14,12 +14,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy.WithOrigins(
-                "http://localhost:3000",
-                "https://task-management-frontend-swart-five.vercel.app")
+            "http://localhost:3000",
+            "https://your-vercel-app-url.vercel.app")
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials()
-            .WithExposedHeaders("Content-Disposition");
+            .AllowAnyMethod();
     });
 });
 

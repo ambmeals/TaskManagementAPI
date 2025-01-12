@@ -75,7 +75,7 @@ namespace TaskManagementAPI.TaskManagementAPITests
                 Title = "New Task",
                 Description = "Description",
                 Priority = "HIGH",
-                Status = "TODO",
+                Status = "TO DO",
                 DueDate = DateTime.UtcNow.AddDays(3)
             };
 
@@ -95,7 +95,7 @@ namespace TaskManagementAPI.TaskManagementAPITests
                 Title = "",
                 Description = "Invalid task",
                 Priority = "LOW",
-                Status = "TODO"
+                Status = "TO DO"
             };
 
             var result = _taskController.CreateTask(input).Result as BadRequestObjectResult;

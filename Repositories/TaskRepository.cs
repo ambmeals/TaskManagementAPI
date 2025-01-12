@@ -12,7 +12,7 @@ namespace TaskManagementAPI.Repositories
                 Title = "Task 1",
                 Description = "This is the first task",
                 Priority = "HIGH",
-                Status = "TODO",
+                Status = "TO DO",
                 DueDate = DateTime.UtcNow.AddDays(7),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -23,7 +23,7 @@ namespace TaskManagementAPI.Repositories
                 Title = "Task 2",
                 Description = "This is the second task",
                 Priority = "MEDIUM",
-                Status = "IN_PROGRESS",
+                Status = "IN PROGRESS",
                 DueDate = DateTime.UtcNow.AddDays(5),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -32,13 +32,13 @@ namespace TaskManagementAPI.Repositories
 
         public IEnumerable<Task> GetTasks()
         {
-            return _tasks.OrderBy(t => t.DueDate.HasValue 
-                    ? 0 
-                    : 1) 
+            return _tasks.OrderBy(t => t.DueDate.HasValue
+                    ? 0
+                    : 1)
                 .ThenBy(t => t.DueDate);
         }
 
-        public Task? GetTaskById(string id) => 
+        public Task? GetTaskById(string id) =>
             _tasks.FirstOrDefault(t => t.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
 
         public void CreateTask(Task task)
@@ -53,7 +53,7 @@ namespace TaskManagementAPI.Repositories
         {
             var existingTask = _tasks.FirstOrDefault(t => t.Id == taskToUpdate?.Id);
 
-            if (existingTask == null) 
+            if (existingTask == null)
                 return;
 
             existingTask.Title = taskToUpdate.Title;
