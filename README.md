@@ -1,3 +1,7 @@
+You can test the task API directly with this link:
+https://taskmanagementapi20250108083524.azurewebsites.net/api/task</br>
+
+
 The front end React App:
 ![image](https://github.com/user-attachments/assets/560335f8-0cf1-4c66-995a-ddc0b191e8a0)
 
