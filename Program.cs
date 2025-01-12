@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
             "http://localhost:3000",
-            "https://your-vercel-app-url.vercel.app")
+            "https://task-management-frontend-4ba2j16r7-ambmeals-projects.vercel.app")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
