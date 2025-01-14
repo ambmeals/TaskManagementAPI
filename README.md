@@ -3,7 +3,7 @@ https://taskmanagementapi20250108083524.azurewebsites.net/api/task</br>
 
 
 The front end React App:
-![image](https://github.com/user-attachments/assets/43ff927b-5361-4a5b-8a12-a1c017142936)
+![image](https://github.com/user-attachments/assets/07cff60b-2c22-405d-a0bb-d8e270cc9eee)
 
 
 Backend SWAGGER APIs:
